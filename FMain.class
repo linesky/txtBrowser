@@ -1,0 +1,44 @@
+' Gambas class file
+
+
+
+Public Sub form_Close()
+  
+
+  
+End
+
+Public Sub Form_Open()
+Dim f1 As File
+f1 = Open "/tmp/txtBrowser" For Create 
+Close f1
+f1 = Open "/tmp/txtBrowser.out" For Create 
+Close f1
+f1.Save("/tmp/txtBrowser", "")
+f1.Save("/tmp/txtBrowser.out", "")
+  TextArea1.Text = ""
+
+End
+
+Public Sub Button1_Click()
+Dim f1 As File
+Dim a As String 
+Dim aa As String 
+f1 = Open "/tmp/txtBrowser" For Create 
+  Print #f1, TextBox4.Text
+Close f1
+  'f1.Save("/tmp/txtBrowser ", TextBox4.Text & "\n")
+  Sleep 1
+  Shell "netcat " & TextBox1.Text & " " & TextBox2.Text & " < /tmp/txtBrowser > /tmp/txtBrowser.out"
+  Sleep 1
+  f1 = Open "/tmp/txtBrowser.out" For Input
+  aa = ""
+  While 1
+    Line Input #f1, a
+    aa = aa & "\n" & a
+    If Eof(f1) Then Break
+  Wend
+  Close #f1
+  TextArea1.Text = aa
+  TextArea1.refresh()
+End
